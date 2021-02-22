@@ -9,22 +9,41 @@ $('.page-title-input').on('keyup', function(){
 })
 
 $('.note-tab').on('click', function() {
-    $('.note-tab').removeClass('active');
     $(this).addClass('active');
 })
 
+$('.page-textarea').on('keyup', function(){
+    if ($(this).val() === 0){
+        $('.add-btn').disabled === true;
+    }else{
+        $('.add-btn').disabled === false;
+    }
+})
+
 $('.add-btn').on('click', function(){
-    count++;
+    if ($('.page-textarea').val() === '' && $('.page-container').css('display') === 'block') {
+        return;
+    }
+    else {
+     count++;
     let noteTab = $('<button>');
     $(noteTab).attr('class', 'note-tab');
     $(noteTab).attr('id', count)
     $('.saved-notes-container').append(noteTab);
-    noteTab.text('Title of note...')
-    if ($('.page-title-input').attr('placeholder') === 'Title of note...') {
-        return;
+    noteTab.text('Title of note...')  
+    $('.page-container').css('display', 'block') 
     }
+    
+    
+    
+
 })
 
+
+
+
 $('.trash-btn').on('click',function (){
+    
     $('.active').remove();
+    
 })
