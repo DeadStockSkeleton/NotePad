@@ -61,7 +61,7 @@ $(".notes-container").on("click", "button", function () {
       let saved = $(".active").attr("id");
 
       console.log(saved);
-      $.get("http://localhost:3000/api/" + saved, function (data) {
+      $.get("https://notesapp0.herokuapp.com/api/" + saved, function (data) {
         console.log(data);
         $("#note-title").val(data.title);
         $("#note-text").val(data.content);
@@ -122,7 +122,7 @@ $(document).ready(function () {
       return;
     } else {
       console.log(saved);
-      $.post("http://localhost:3000/delete/" + saved, function (data) {
+      $.post("https://notesapp0.herokuapp.com/delete/" + saved, function (data) {
         console.log(saved);
       });
     }
@@ -159,7 +159,7 @@ $(document).ready(function () {
         content: $("#note-text").val(),
       };
 
-      $.post("http://localhost:3000/api/new/", newNote).then(function (data) {
+      $.post("https://notesapp0.herokuapp.com/api/new/", newNote).then(function (data) {
         console.log(data);
       });
       $(".loader").css("display", "none");
