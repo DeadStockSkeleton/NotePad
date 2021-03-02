@@ -20,38 +20,60 @@ app.get('/notes', function(req, res) {
     res.sendFile(path.join(__dirname, 'notes.html'))
 })
 
-var notes = fs.readFile('./db/db.json', function(req, res){
-    return res;
-});
+var notes = []
+ notes = fs.readFileSync('./db/db.json',  "utf8");
+ notes = JSON.parse(notes);
+
 app.use('/public/assets', express.static(path.join(__dirname, '/public/assets')));
 app.use('/db', express.static(path.join(__dirname, '/db')));
 app.get('/api/:notes?', function(req, res) {
-    var selected = req.param.notes
+    
+    var selected = req.params.notes;
 
-    if(selected){
-     for (var i = 0; i < notes.length; i++) {
-        if (selected ===notes[i].title){
-            res.json(notes[i]);
-            return;
-        }
+    
+      for (let j = 0; j < selected.length; i++){
+        console.log(selected[j]);
+        if(selected[j]){
+            for (var i = 0; i < notes.length; i++) {
+               if (selected[j] ===notes[i].id){
+                return res.json(notes[i]);
+                   
+               }
+           }
+       
+           res.send('No note found');   
+           }else{
+               return res.json(notes);
+           }
     }
-
-    res.send('No note found');   
-    }else{
-        res.json(notes);
-    }
+  
+    
+    
+    
+    
 
     
 
 })
 app.post('/api/new/', function(req, res) {
+    notes = fs.readFileSync('./db/db.json',  "utf8");
+ notes = JSON.parse(notes);
     
     var newNote = req.body;
 
-    console.log(newNote);
+   
+    
+     for (let i = 0; i < notes.length; i++){
+         if (notes[i].id === newNote.id){
+            notes.pop(notes[i]);
+         }
 
-    notes.push(newNote);
+     }
+      notes.push(newNote);
     res.json(newNote);
+     fs.writeFile('./db/db.json', JSON.stringify(notes), function(err, results){
+         
+     });
 })
 app.listen(PORT, function(){
     console.log('listening on port ' + PORT);
