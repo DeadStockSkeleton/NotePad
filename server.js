@@ -103,6 +103,4 @@ app.post('/api/new/', function(req, res) {
          
      });
 })
-app.listen(PORT, function(){
-    console.log('listening on port ' + PORT);
-})
+app.listen(process.env.PORT || PORT)
