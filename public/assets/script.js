@@ -60,9 +60,7 @@ $(".notes-container").on("click", "button", function () {
     if ($(this).hasClass("active")) {
       let saved = $(".active").attr("id");
 
-      
       $.get("https://notesapp0.herokuapp.com/api/" + saved, function (data) {
-        
         $("#note-title").val(data.title);
         $("#note-text").val(data.content);
       });
@@ -74,8 +72,6 @@ $(".notes-container").on("click", "button", function () {
     }
   }
 });
-
-
 
 function delay(callback, ms) {
   var timer = 0;
@@ -111,20 +107,20 @@ $(document).ready(function () {
   }
   init();
   $("#trash").on("click", function () {
-    if ($('button').length = 1) {
+    if (($("button").length = 1)) {
       $(".add-btn").removeClass("disabled");
       $(".page-container").css("display", "none");
-    } 
+    }
     let saved = $(".active").attr("id");
     if ($("#note-title").val() === "") {
       $(".page-container").css("display", "none");
       $(".active").remove();
       return;
     } else {
-      
-      $.post("https://notesapp0.herokuapp.com/delete/" + saved, function (data) {
-        
-      });
+      $.post(
+        "https://notesapp0.herokuapp.com/delete/" + saved,
+        function (data) {}
+      );
     }
     $("#note-title").val("");
     $("#note-text").val("");
@@ -159,8 +155,10 @@ $(document).ready(function () {
         content: $("#note-text").val(),
       };
 
-      $.post("https://notesapp0.herokuapp.com/api/new/", newNote).then(function (data) {
-      });
+      $.post(
+        "https://notesapp0.herokuapp.com/api/new/",
+        newNote
+      ).then(function (data) {});
       $(".loader").css("display", "none");
       $(".note-tab").removeClass("disabled");
       $(".status-text").text("saved");
