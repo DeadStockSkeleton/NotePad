@@ -27,7 +27,7 @@ app.get('/notes', function(req, res) {
 
 for (let i = 0; i < notes.length; i++){
      if (notes[i].title.length < 0){
-         console.log('hdjsakd');
+         
      }
  } 
 
@@ -41,7 +41,7 @@ app.get('/api/:notes?', function(req, res) {
 
     
       for (let j = 0; j < selected.length; i++){
-        console.log(selected[j]);
+        
         if(selected[j]){
             for (var i = 0; i < notes.length; i++) {
                if (selected[j] ===notes[i].id){

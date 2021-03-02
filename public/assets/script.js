@@ -60,9 +60,9 @@ $(".notes-container").on("click", "button", function () {
     if ($(this).hasClass("active")) {
       let saved = $(".active").attr("id");
 
-      console.log(saved);
+      
       $.get("https://notesapp0.herokuapp.com/api/" + saved, function (data) {
-        console.log(data);
+        
         $("#note-title").val(data.title);
         $("#note-text").val(data.content);
       });
@@ -121,9 +121,9 @@ $(document).ready(function () {
       $(".active").remove();
       return;
     } else {
-      console.log(saved);
+      
       $.post("https://notesapp0.herokuapp.com/delete/" + saved, function (data) {
-        console.log(saved);
+        
       });
     }
     $("#note-title").val("");
@@ -160,7 +160,6 @@ $(document).ready(function () {
       };
 
       $.post("https://notesapp0.herokuapp.com/api/new/", newNote).then(function (data) {
-        console.log(data);
       });
       $(".loader").css("display", "none");
       $(".note-tab").removeClass("disabled");
