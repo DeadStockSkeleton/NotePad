@@ -11,6 +11,9 @@ app.use(bodyParser.json({type: 'application/**json'}))
 app.use(bodyParser.raw({type: 'application/vnd.custom-type'}))
 app.use(bodyParser.text({type: 'text/html'}))
 
+var notes = []
+ notes = fs.readFileSync('./db/db.json',  "utf8");
+ notes = JSON.parse(notes);
 
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname, 'index.html'))
@@ -18,17 +21,23 @@ app.get('/', function(req, res) {
 
 app.get('/notes', function(req, res) {
     res.sendFile(path.join(__dirname, 'notes.html'))
+
+   
 })
 
-var notes = []
- notes = fs.readFileSync('./db/db.json',  "utf8");
- notes = JSON.parse(notes);
+for (let i = 0; i < notes.length; i++){
+     if (notes[i].title.length < 0){
+         console.log('hdjsakd');
+     }
+ } 
+
+ 
 
 app.use('/public/assets', express.static(path.join(__dirname, '/public/assets')));
 app.use('/db', express.static(path.join(__dirname, '/db')));
 app.get('/api/:notes?', function(req, res) {
     
-    var selected = req.params.notes;
+    let selected = req.params.notes;
 
     
       for (let j = 0; j < selected.length; i++){
@@ -55,11 +64,30 @@ app.get('/api/:notes?', function(req, res) {
     
 
 })
+
+app.post('/delete/:notes?', function(req, res){
+    let deleted = req.params.notes;
+    notes = fs.readFileSync('./db/db.json',  "utf8");
+ notes = JSON.parse(notes);
+
+ for (let i = 0; i < notes.length; i++){
+     if (notes[i].id === deleted){
+        
+         notes.pop(notes[i]);
+         fs.writeFile('./db/db.json', JSON.stringify(notes), function(err, results){
+         
+        });
+         return console.log(notes);
+     }
+ }
+
+})
 app.post('/api/new/', function(req, res) {
     notes = fs.readFileSync('./db/db.json',  "utf8");
  notes = JSON.parse(notes);
     
     var newNote = req.body;
+
 
    
     

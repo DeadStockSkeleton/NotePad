@@ -328,3 +328,17 @@ display: none;
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+
+  #trash{
+      position: fixed;
+      right: 25px;
+      bottom: 25px;;
+      width: 50px;
+      height: 50px;
+      background-color: transparent;
+      border-radius: 50px;
+  }
+
+  #trash:hover{
+      opacity: .5;
+  }

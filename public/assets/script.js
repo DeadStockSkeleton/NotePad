@@ -18,12 +18,12 @@ $(".add-btn").on("click", function () {
   } else {
     $(".notes-container").append(addBtn);
     $(".note-tab").removeClass("active");
-    for (let i = 0; i < $('.note-tab').length; i++){
+    for (let i = 0; i < $(".note-tab").length; i++) {
       $(addBtn).attr("id", i);
       $(".note-tab").removeClass("active");
       $("#" + i).addClass("active");
     }
-    
+
     $("#note-title").val("");
     $("#note-text").val("");
 
@@ -52,24 +52,30 @@ $(".notes-container").on("click", "button", function () {
   $(".page-container").fadeIn();
   $(".note-tab").removeClass("active");
   $(this).addClass("active");
-  if ($(this).hasClass("active")) {
-    let saved = $(".active").attr('id')
-    
-console.log(saved);
-    $.get("http://localhost:3000/api/" + saved, function (data) {
-     console.log(data);
-     $("#note-title").val(data.title);
-     $("#note-text").val(data.content);
-        
-      
-    });
+  if ($(".active").text() === "Note Title...") {
+    $("#note-title").val("");
+    $("#note-text").val("");
+    return;
+  } else {
+    if ($(this).hasClass("active")) {
+      let saved = $(".active").attr("id");
 
-    if ($('.active[value="default"')) {
-      $("#note-title").val("");
-      $("#note-text").val("");
+      console.log(saved);
+      $.get("http://localhost:3000/api/" + saved, function (data) {
+        console.log(data);
+        $("#note-title").val(data.title);
+        $("#note-text").val(data.content);
+      });
+
+      if ($('.active[value="default"')) {
+        $("#note-title").val("");
+        $("#note-text").val("");
+      }
     }
   }
 });
+
+
 
 function delay(callback, ms) {
   var timer = 0;
@@ -88,65 +94,82 @@ $(document).ready(function () {
     $(".page-container").fadeIn();
   }
 
-  if ($('note-tab').text().length){
-    alert('helloo');
-  }
   var notes = [];
   function init() {
     $(".notes-container").html("");
     $.getJSON("../../db/db.json").then(function (json) {
       for (let i = 0; i < json.length; i++) {
-        let button = `<button id="${json[i].id}" class="note-tab">${json[i].title}</button>`;
+        if (json[i].title === "") {
+          var button = `<button id="${json[i].id}" class="note-tab">Note Title...</button>`;
+          $(".add-btn").disabled === true;
+        } else {
+          button = `<button id="${json[i].id}" class="note-tab">${json[i].title}</button>`;
+        }
         $(".notes-container").append(button);
       }
     });
   }
   init();
-
+  $("#trash").on("click", function () {
+    if ($('button').length = 1) {
+      $(".add-btn").removeClass("disabled");
+      $(".page-container").css("display", "none");
+    } 
+    let saved = $(".active").attr("id");
+    if ($("#note-title").val() === "") {
+      $(".page-container").css("display", "none");
+      $(".active").remove();
+      return;
+    } else {
+      console.log(saved);
+      $.post("http://localhost:3000/delete/" + saved, function (data) {
+        console.log(saved);
+      });
+    }
+    $("#note-title").val("");
+    $("#note-text").val("");
+    init();
+  });
   $("#note-title").keyup(
-    delay(
-      function (e) {
-        save();
-      },
-      1000,
-
-    )
+    delay(function (e) {
+      save();
+    }, 1000)
   );
 
   $("#note-text").keyup(
-    delay(
-      function (e) {
-        save();
-      },
-      1000,
-
-    )
+    delay(function (e) {
+      save();
+    }, 1000)
   );
-$(document).keyup(function(){
-  $('.loader').css('display', 'block');
-  $(".note-tab").addClass("disabled");
-  $('button').disabled === true;
-  $('.status-text').text(''); 
-})
+  $(document).keyup(function () {
+    if ($(".page-container").css("display") === "block") {
+      $(".loader").css("display", "block");
+      $(".note-tab").addClass("disabled");
+      $("button").disabled === true;
+      $(".status-text").text("");
+    }
+  });
   function save() {
-    var newNote = {
-      title: $("#note-title").val(),
-      id: $(".active").attr("id"),
-      content: $("#note-text").val(),
-    };
+    if ($("#note-title").val() === "") {
+      return;
+    } else {
+      var newNote = {
+        title: $("#note-title").val(),
+        id: $(".active").attr("id"),
+        content: $("#note-text").val(),
+      };
 
-
-    
-      $.post('http://localhost:3000/api/new/', newNote).then(function(data){
-        console.log(data)
-      })
-      $('.loader').css('display', 'none');
+      $.post("http://localhost:3000/api/new/", newNote).then(function (data) {
+        console.log(data);
+      });
+      $(".loader").css("display", "none");
       $(".note-tab").removeClass("disabled");
-      $('.status-text').text('saved');
-      $('button').disabled === false;
-      setTimeout(function(){
-        $('.status-text').text(''); 
-      }, 4000)
+      $(".status-text").text("saved");
+      $("button").disabled === false;
+      setTimeout(function () {
+        $(".status-text").text("");
+      }, 4000);
+    }
   }
 
   $("#note-text").keyup(
