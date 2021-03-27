@@ -61,9 +61,10 @@ app.post("/delete/:notes?", function (req, res) {
     for (let i = 0; i < notes.length; i++) {
       if (notes[i].id === deleted) {
         const data = notes.filter(o => o.id != deleted);
+        notes = data
         fs.writeFile(
           "./db/db.json",
-          JSON.stringify(data),
+          JSON.stringify(notes),
           function (err, results) {
             
           }

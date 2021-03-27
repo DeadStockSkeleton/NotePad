@@ -1,4 +1,4 @@
-let count;
+let count = 0;
 
 $(".add-btn").on("click", function () {
   count++;
@@ -9,32 +9,33 @@ $(".add-btn").on("click", function () {
   $(addBtn).attr("value", "default");
   $(".add-btn").addClass("disabled");
   for (let i = 0; i < $(".note-tab").length; i++) {
-    $(addBtn).attr("id", i);
+    $(addBtn).attr("id", count);
     $(".note-tab").removeClass("active");
-    $("#" + i).addClass("active");
+    $("#" + count).addClass("active");
   }
 
   if (
     $(".active").attr("value") === "default" ||
     $('button[value="default"]').length > 0
+    
   ) {
+    
     return 0;
   } else {
     $(".notes-container").append(addBtn);
     $(".note-tab").removeClass("active");
     for (let i = 0; i < $(".note-tab").length; i++) {
-      $(addBtn).attr("id", i);
+      $(addBtn).attr("id", count);
       $(".note-tab").removeClass("active");
-      $("#" + i).addClass("active");
+      $("#" + count).addClass("active");
     }
-
-    $("#note-title").val("");
-    $("#note-text").val("");
 
     if ($(".page-container").css("display") === "none") {
       $(".page-container").fadeIn();
     }
   }
+  $("#note-title").val("");
+    $("#note-text").val("");
 });
 
 $("#note-title").on("keyup", function () {
@@ -56,10 +57,8 @@ $(".notes-container").on("click", "button", function () {
   $(".page-container").fadeIn();
   $(".note-tab").removeClass("active");
   $(this).addClass("active");
-  if ($(".active").text() === "Note Title...") {
-    return;
-  } else {
-    if ($(this).hasClass("active")) {
+  if ($(".active").text() !== "Note Title...") {
+if ($(this).hasClass("active")) {
       let saved = $(".active").attr("id");
 
       $.get("/api/" + saved, function (data) {
@@ -73,6 +72,10 @@ $(".notes-container").on("click", "button", function () {
         $("#note-text").val("");
       }
     }
+    return;
+  } else {
+    $("#note-title").val("");
+    $("#note-text").val("");
   }
 });
 
