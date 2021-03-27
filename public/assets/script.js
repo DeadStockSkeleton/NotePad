@@ -117,9 +117,11 @@ $(document).ready(function () {
       $(".active").remove();
       return;
     } else {
-      $.post(
+      $.delete(
         "https://notesapp0.herokuapp.com/delete/" + saved,
-        function (data) {}
+        function (data) {
+          console.log(data);
+        }
       );
     }
     $("#note-title").val("");

@@ -55,7 +55,7 @@ app.get("/api/:notes?", function (req, res) {
   }
 });
 
-app.post("/delete/:notes?", function (req, res) {
+app.delete("/delete/:notes?", function (req, res) {
   let deleted = req.params.notes;
   console.log(deleted);
 
