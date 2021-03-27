@@ -1,4 +1,4 @@
-let count = 0;
+let count;
 
 $(".add-btn").on("click", function () {
   count++;
@@ -6,9 +6,13 @@ $(".add-btn").on("click", function () {
   let addBtn = $("<button>");
   $(addBtn).attr("class", "note-tab");
   $(addBtn).text("Note Title...");
-  $(addBtn).attr("id", count);
   $(addBtn).attr("value", "default");
   $(".add-btn").addClass("disabled");
+  for (let i = 0; i < $(".note-tab").length; i++) {
+    $(addBtn).attr("id", i);
+    $(".note-tab").removeClass("active");
+    $("#" + i).addClass("active");
+  }
 
   if (
     $(".active").attr("value") === "default" ||
@@ -53,16 +57,15 @@ $(".notes-container").on("click", "button", function () {
   $(".note-tab").removeClass("active");
   $(this).addClass("active");
   if ($(".active").text() === "Note Title...") {
-    $("#note-title").val("");
-    $("#note-text").val("");
     return;
   } else {
     if ($(this).hasClass("active")) {
       let saved = $(".active").attr("id");
 
-      $.get("https://notesapp0.herokuapp.com/api/" + saved, function (data) {
+      $.get("/api/" + saved, function (data) {
         $("#note-title").val(data.title);
         $("#note-text").val(data.content);
+        $('#trash').attr("data-index", saved);
       });
 
       if ($('.active[value="default"')) {
@@ -106,28 +109,36 @@ $(document).ready(function () {
     });
   }
   init();
-  $("#trash").on("click", function () {
+  $("#trash").on("click", async function () {
     if (($("button").length = 1)) {
       $(".add-btn").removeClass("disabled");
       $(".page-container").css("display", "none");
     }
     let saved = $(".active").attr("id");
+    let title = $('.active').val();
     if ($("#note-title").val() === "") {
       $(".page-container").css("display", "none");
       $(".active").remove();
       return;
     } else {
-      $.delete(
-        "https://notesapp0.herokuapp.com/delete/" + saved,
-        function (data) {
-          console.log(data);
-        }
-      );
+      try{
+        const response = await fetch(`/delete/${saved}`, {
+        method: "POST",
+        body: JSON.stringify({ saved }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+      }catch(err){
+        console.log(err);
+      }
+      
     }
+    
+    init()
     $("#note-title").val("");
     $("#note-text").val("");
-    init();
+    
   });
+  
   $("#note-title").keyup(
     delay(function (e) {
       save();
@@ -143,7 +154,9 @@ $(document).ready(function () {
     if ($(".page-container").css("display") === "block") {
       $(".loader").css("display", "block");
       $(".note-tab").addClass("disabled");
-      $("button").disabled === true;
+      $(".add-btn").addClass("disabled");
+      $('.addBtn').disabled = true;
+      $("button").disabled = true;
       $(".status-text").text("");
     }
   });
@@ -158,13 +171,15 @@ $(document).ready(function () {
       };
 
       $.post(
-        "https://notesapp0.herokuapp.com/api/new/",
+        "/api/new",
         newNote
       ).then(function (data) {});
       $(".loader").css("display", "none");
       $(".note-tab").removeClass("disabled");
       $(".status-text").text("saved");
-      $("button").disabled === false;
+      $(".add-btn").removeClass("disabled");
+      $("button").disabled = false;
+      $('.addBtn').disabled = false;
       setTimeout(function () {
         $(".status-text").text("");
       }, 4000);
